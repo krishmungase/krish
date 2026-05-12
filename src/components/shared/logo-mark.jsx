@@ -1,0 +1,104 @@
+import { motion } from 'framer-motion'
+
+import { cn } from '@/lib'
+
+/**
+ * Out-of-the-box logo:
+ *  - viewfinder bracket corners (designer/camera framing motif)
+ *  - bold yellow K with a motion-trail echo (energy / shipping fast)
+ *  - asterisk star accent floating outside the K
+ *  - transparent background so it sits on any surface
+ *  - subtle hover: trail offset increases + asterisk spins
+ */
+const K_PATHS = (
+  <>
+    <rect x="14" y="11" width="10" height="42" rx="1.5" />
+    <polygon points="24,30 43,11 53,11 30,34" />
+    <polygon points="30,30 53,53 43,53 24,34" />
+  </>
+)
+
+const LogoMark = ({ className, animated = true }) => {
+  return (
+    <motion.span
+      whileHover={animated ? 'hover' : undefined}
+      initial="rest"
+      animate="rest"
+      className={cn(
+        'relative inline-grid shrink-0 place-items-center',
+        className
+      )}
+      aria-label="Krish Mungase logo"
+    >
+      <svg
+        viewBox="0 0 64 64"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        className="h-full w-full overflow-visible"
+      >
+        {/* Viewfinder bracket corners */}
+        <g
+          stroke="#ffc11c"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M 4 14 L 4 4 L 14 4" />
+          <path d="M 50 4 L 60 4 L 60 14" />
+          <path d="M 60 50 L 60 60 L 50 60" />
+          <path d="M 14 60 L 4 60 L 4 50" />
+        </g>
+
+        {/* Motion-trail echoes — far + mid */}
+        <motion.g
+          variants={{
+            rest: { x: 0, y: 0 },
+            hover: { x: 6, y: 6 },
+          }}
+          transition={{ type: 'spring', stiffness: 200, damping: 18 }}
+          fill="#ffc11c"
+          opacity="0.18"
+        >
+          {K_PATHS}
+        </motion.g>
+        <motion.g
+          variants={{
+            rest: { x: 0, y: 0 },
+            hover: { x: 3, y: 3 },
+          }}
+          transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+          fill="#ffc11c"
+          opacity="0.42"
+        >
+          {K_PATHS}
+        </motion.g>
+
+        {/* Front solid K */}
+        <g fill="#ffc11c">{K_PATHS}</g>
+
+        {/* Underline accent below the K's vertical */}
+        <rect x="14" y="56" width="22" height="2.5" rx="1.25" fill="#ffc11c" />
+
+        {/* Asterisk star — orbits the K, rotates on hover */}
+        <motion.g
+          variants={{
+            rest: { rotate: 0 },
+            hover: { rotate: 90 },
+          }}
+          transition={{ type: 'spring', stiffness: 180, damping: 16 }}
+          style={{ transformOrigin: '57px 11px' }}
+          stroke="#ffc11c"
+          strokeWidth="2"
+          strokeLinecap="round"
+        >
+          <line x1="53.5" y1="11" x2="60.5" y2="11" />
+          <line x1="57" y1="7.5" x2="57" y2="14.5" />
+          <line x1="54.5" y1="8.5" x2="59.5" y2="13.5" />
+          <line x1="59.5" y1="8.5" x2="54.5" y2="13.5" />
+        </motion.g>
+      </svg>
+    </motion.span>
+  )
+}
+
+export default LogoMark
