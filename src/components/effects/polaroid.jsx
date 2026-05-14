@@ -54,7 +54,7 @@ const Polaroid = ({ src = '/krish.jpeg', caption = 'krish', className }) => {
       <div className="absolute bottom-2 left-0 right-0 flex flex-col items-center">
         <span className="font-script text-2xl text-neutral-900">{caption}</span>
         <span className="font-mono text-[8px] uppercase tracking-widest text-neutral-700">
-          MIT AOE · 2026
+          MIT AOE · 2027
         </span>
       </div>
     </motion.div>

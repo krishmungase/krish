@@ -1,69 +1,67 @@
-import { Github, Linkedin, Mail, Heart, ArrowUp } from 'lucide-react'
+import { ArrowUp } from 'lucide-react'
 
-import { profile } from '@/constants'
 import { AsteriskStar } from '@/components/effects'
-
-const LeetCodeIcon = (props) => (
-  <svg
-    viewBox="0 0 24 24"
-    width="14"
-    height="14"
-    fill="currentColor"
-    {...props}
-  >
-    <path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.541.54-1.419.003-1.96a1.392 1.392 0 0 0-1.955-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z" />
-  </svg>
-)
 
 const Footer = () => {
   const year = new Date().getFullYear()
-  const socials = [
-    { icon: Github, href: profile.socials.github, label: 'GitHub' },
-    { icon: Linkedin, href: profile.socials.linkedin, label: 'LinkedIn' },
-    { icon: LeetCodeIcon, href: profile.socials.leetcode, label: 'LeetCode' },
-    { icon: Mail, href: profile.socials.email, label: 'Email' },
-  ]
 
   return (
-    <footer className="relative mt-12 border-t border-border/70 py-10">
-      <span className="font-script pointer-events-none absolute -top-4 left-1/2 -translate-x-1/2 select-none text-3xl text-primary/30 sm:text-4xl">
-        thank you !
-      </span>
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-5 sm:px-8 md:flex-row md:items-center md:justify-between">
-        <div className="text-sm text-muted-foreground">
-          <p className="flex items-center gap-1.5">
-            <AsteriskStar size={12} className="text-primary" />
-            Designed & built with <Heart
-              size={12}
-              className="text-rose-500"
-            />{' '}
-            by{' '}
-            <span className="font-medium text-foreground">Krish Mungase</span> ·
-            © {year}
-          </p>
+    <footer className="relative mt-20 overflow-hidden border-t border-dashed border-border/60">
+      {/* Subtle background grid */}
+      <div className="pointer-events-none absolute inset-0 bg-grid opacity-25" />
+
+      <div className="relative mx-auto w-full max-w-6xl px-5 sm:px-8">
+        {/* ===== TOP STRIP — sign off ===== */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-border/60 py-3 font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <AsteriskStar size={11} />
+            <span>fin · end of feed</span>
+          </div>
+          <span className="font-handwritten -rotate-3 text-base normal-case tracking-normal text-primary">
+            see you soon ✦
+          </span>
         </div>
 
-        <div className="flex items-center gap-2">
-          {socials.map(({ icon: Icon, href, label }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={label}
-              className="grid h-9 w-9 place-items-center rounded-full border border-border bg-card/60 text-muted-foreground transition hover:border-primary hover:text-foreground"
-            >
-              <Icon size={14} />
-            </a>
-          ))}
+        {/* ===== ONE-LINE EDITORIAL SIGNATURE ===== */}
+        <div className="flex flex-col items-start justify-between gap-6 py-10 md:flex-row md:items-center">
+          {/* tiny mark */}
+          <p className="font-display flex items-baseline gap-1 text-2xl font-extrabold leading-none text-foreground">
+            krish<span className="font-serif italic text-primary">.</span>
+          </p>
+
+          {/* center meta — build credits */}
+          <p className="font-mono max-w-md text-center text-[10px] uppercase tracking-[0.22em] leading-relaxed text-muted-foreground">
+            hand-built with{' '}
+            <span className="text-foreground">react</span>,{' '}
+            <span className="text-foreground">tailwind</span> &amp;{' '}
+            <span className="text-foreground">framer-motion</span>
+            <br className="hidden sm:inline" />
+            <span className="block sm:inline">
+              {' '}
+              · a healthy dose of <span className="text-primary">☕</span>
+            </span>
+          </p>
+
+          {/* back to top */}
           <a
             href="#home"
             aria-label="Back to top"
-            className="ml-1 inline-flex items-center gap-1.5 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:border-primary hover:text-foreground"
+            className="group font-mono inline-flex items-center gap-2 rounded-full border border-border bg-background/40 px-3.5 py-2 text-[10px] uppercase tracking-[0.22em] text-foreground transition hover:border-primary hover:bg-primary/10"
           >
-            Top
-            <ArrowUp size={12} />
+            back to top
+            <ArrowUp
+              size={12}
+              className="transition-transform group-hover:-translate-y-0.5"
+            />
           </a>
+        </div>
+
+        {/* ===== BOTTOM FINE PRINT ===== */}
+        <div className="flex flex-col gap-2 border-t border-dashed border-border/60 py-4 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <span>© {year} krish mungase · all rights reserved</span>
+          <span>
+            made in <span className="text-primary">pune, india</span>
+          </span>
         </div>
       </div>
     </footer>

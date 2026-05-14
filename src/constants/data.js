@@ -20,7 +20,7 @@ export const profile = {
     email: 'mailto:mungasekrishna8@gmail.com',
   },
   leetcodeHandle: 'psycho_coder07',
-  resumeUrl: '/resume.pdf',
+  resumeUrl: '/Krish.pdf',
 }
 
 export const skills = [

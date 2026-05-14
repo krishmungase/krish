@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ArrowUpRight } from 'lucide-react'
 
 import LogoMark from './logo-mark'
 import { navLinks } from '@/constants'
@@ -63,49 +63,76 @@ const Header = () => {
 
       <header
         className={cn(
-          'fixed inset-x-0 top-3 z-50 mx-auto flex w-[min(96%,72rem)] items-center justify-between gap-4 rounded-full border border-transparent px-3 py-1.5 transition-all duration-300',
+          'fixed inset-x-0 top-4 z-50 mx-auto flex w-[min(96%,74rem)] items-center justify-between gap-4 rounded-2xl border border-transparent px-3.5 py-2 transition-all duration-300',
           scrolled &&
             'border-border bg-card/80 backdrop-blur-md shadow-[0_8px_30px_-10px_rgba(0,0,0,0.5)]'
         )}
       >
-        {/* Left: logo + wordmark */}
+        {/* === LEFT: Wordmark === */}
         <a
           href="#home"
           className="flex items-center gap-2.5 pl-1 pr-2"
           aria-label="Krish Mungase — home"
         >
-          <LogoMark className="h-8 w-8" />
-          <span className="hidden font-display text-base font-bold tracking-tight sm:inline">
-            krish<span className="text-primary">.</span>
-          </span>
+          <LogoMark className="h-7 w-7" />
+          <div className="hidden flex-col leading-none sm:flex">
+            <span className="font-display text-sm font-bold tracking-tight text-foreground">
+              krish<span className="font-serif italic text-primary">.</span>
+            </span>
+            <span className="font-mono mt-0.5 text-[8px] uppercase tracking-[0.28em] text-muted-foreground">
+              full-stack · '27
+            </span>
+          </div>
         </a>
 
-        {/* Center: nav */}
+        {/* === CENTER: Nav (mono uppercase, editorial) === */}
         <nav className="hidden items-center gap-0.5 md:flex">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              data-active={active === link.href}
-              className={cn(
-                'relative rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground',
-                active === link.href && 'text-foreground'
-              )}
-            >
-              {active === link.href && (
-                <motion.span
-                  layoutId="nav-pill"
-                  className="absolute inset-0 -z-10 rounded-full bg-primary/10"
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                />
-              )}
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = active === link.href
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                data-active={isActive}
+                className={cn(
+                  'font-mono relative rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground',
+                  isActive && 'text-foreground'
+                )}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-0 -z-10 rounded-full bg-primary/12"
+                    transition={{
+                      type: 'spring',
+                      stiffness: 300,
+                      damping: 30,
+                    }}
+                  />
+                )}
+                {link.label}
+              </a>
+            )
+          })}
         </nav>
 
-        {/* Right: mobile menu only */}
+        {/* === RIGHT: CTA + mobile menu === */}
         <div className="flex items-center gap-2">
+          <a
+            href="#contact"
+            className="font-mono group hidden items-center gap-1.5 rounded-full border border-border bg-background/40 px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-foreground transition hover:border-primary hover:bg-primary/10 md:inline-flex"
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/70" />
+              <span className="relative h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            </span>
+            let's talk
+            <ArrowUpRight
+              size={12}
+              className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            />
+          </a>
+
           <button
             onClick={() => setOpen((v) => !v)}
             className="grid h-9 w-9 place-items-center rounded-full border border-border bg-card/60 backdrop-blur md:hidden"
@@ -138,6 +165,7 @@ const Header = () => {
         </div>
       </header>
 
+      {/* Mobile sheet — editorial typography */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -149,7 +177,10 @@ const Header = () => {
           >
             <div className="absolute inset-0 -z-10 bg-grid opacity-50" />
 
-            <div className="flex h-16 items-center justify-end px-4">
+            <div className="flex h-16 items-center justify-between px-5">
+              <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+                menu / index
+              </span>
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
@@ -158,21 +189,32 @@ const Header = () => {
                 <X size={16} />
               </button>
             </div>
-            <nav className="mx-auto flex flex-1 flex-col items-center justify-center gap-3 px-6 pb-24">
+
+            <nav className="mx-auto flex flex-1 flex-col items-start justify-center gap-2 px-8 pb-24">
               {navLinks.map((link, i) => (
                 <motion.a
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.05 + i * 0.05 }}
-                  className="font-display text-3xl font-bold text-foreground"
+                  className="group flex items-baseline gap-3"
                 >
-                  {link.label}
+                  <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+                    0{i + 1}
+                  </span>
+                  <span className="font-display text-4xl font-extrabold text-foreground transition-colors group-hover:text-primary">
+                    {link.label}
+                    <span className="font-serif italic text-primary">.</span>
+                  </span>
                 </motion.a>
               ))}
             </nav>
+
+            <div className="border-t border-dashed border-border/60 px-5 py-3 font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+              krish mungase · pune, in
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -8,23 +8,20 @@ import {
   Linkedin,
   Send,
   CheckCircle2,
-  Sparkles,
+  ArrowUpRight,
+  Loader2,
 } from 'lucide-react'
 
 import { profile } from '@/constants'
 import SectionHeading from '@/components/shared/section-heading'
-import {
-  Magnetic,
-  AsteriskStar,
-  CircleScribble,
-  ScribbleArrow,
-} from '@/components/effects'
+import { AsteriskStar, CircleScribble } from '@/components/effects'
+import { cn } from '@/lib'
 
 const LeetCodeIcon = (props) => (
   <svg
     viewBox="0 0 24 24"
-    width="16"
-    height="16"
+    width="14"
+    height="14"
     fill="currentColor"
     {...props}
   >
@@ -36,23 +33,56 @@ const socials = [
   { icon: Github, href: profile.socials.github, label: 'GitHub' },
   { icon: Linkedin, href: profile.socials.linkedin, label: 'LinkedIn' },
   { icon: LeetCodeIcon, href: profile.socials.leetcode, label: 'LeetCode' },
-  { icon: Mail, href: profile.socials.email, label: 'Email' },
 ]
 
 const Contact = () => {
-  const [sent, setSent] = useState(false)
+  // status: idle | sending | sent | error
+  const [status, setStatus] = useState('idle')
   const [form, setForm] = useState({ name: '', email: '', message: '' })
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
-    const subject = encodeURIComponent(
-      `Hello from ${form.name || 'your portfolio'}`
-    )
-    const body = encodeURIComponent(
-      `Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`
-    )
-    window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`
-    setSent(true)
+    setStatus('sending')
+
+    try {
+      const res = await fetch(
+        `https://formsubmit.co/ajax/${profile.email}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            name: form.name,
+            email: form.email,
+            message: form.message,
+            _subject: `Portfolio · message from ${form.name}`,
+            _captcha: 'false',
+            _template: 'table',
+          }),
+        }
+      )
+
+      const data = await res.json().catch(() => null)
+      if (res.ok && data?.success !== false) {
+        setStatus('sent')
+        setForm({ name: '', email: '', message: '' })
+        setTimeout(() => setStatus('idle'), 5000)
+      } else {
+        throw new Error('Submit failed')
+      }
+    } catch {
+      setStatus('error')
+      // mailto fallback
+      const subject = encodeURIComponent(
+        `Hello from ${form.name || 'your portfolio'}`
+      )
+      const body = encodeURIComponent(
+        `Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`
+      )
+      window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`
+    }
   }
 
   return (
@@ -66,155 +96,210 @@ const Contact = () => {
         className="absolute right-14 bottom-32 hidden lg:block"
         size={68}
       />
-      <span className="font-script pointer-events-none absolute -top-2 left-1/2 -translate-x-1/2 select-none text-6xl text-primary/15 sm:text-7xl">
-        let's chat
-      </span>
 
-      <div className="relative mx-auto w-full max-w-6xl px-5 sm:px-8">
+      <div className="relative mx-auto w-full max-w-5xl px-5 sm:px-8">
         <SectionHeading
           eyebrow="Get In Touch"
           align="center"
           title={
             <>
-              Let's build something{' '}
-              <span className="highlight-marker text-primary-foreground mx-2 py-2">
-                amazing
-              </span>{' '}
-              together.
+              Got a project, role, or idea?{' '}
+              <span className="font-serif italic text-primary">
+                tell me about it.
+              </span>
             </>
           }
-          description="Got a product idea, a freelance project, or just want to nerd out about React or system design? My inbox is open."
+          description="My inbox is the fastest way. Drop a line below — I read everything and reply within a day, usually."
         />
 
-        <div className="grid gap-6 lg:grid-cols-5">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.55 }}
-            className="surface card-elevated relative overflow-hidden p-6 lg:col-span-2"
-          >
-            <div className="pointer-events-none absolute -right-24 -top-24 h-56 w-56 rounded-full bg-primary/20 blur-3xl" />
+        {/* ===== UNIFIED PANEL ===== */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.55 }}
+          className="surface card-elevated relative overflow-hidden"
+        >
+          {/* corner glow */}
+          <div className="pointer-events-none absolute -right-32 -top-32 h-72 w-72 rounded-full bg-primary/15 blur-3xl" />
 
-            <div className="relative space-y-5">
-              <div>
-                <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                  Reach me at
-                </div>
-                <a
-                  href={profile.socials.email}
-                  className="mt-1 inline-block font-display text-xl font-semibold text-foreground link-underline"
-                >
-                  {profile.email}
-                </a>
-                <span className="font-handwritten mt-1 block -rotate-1 text-base text-primary/85">
-                  I reply within a day — promise ✨
+          <div className="grid lg:grid-cols-[280px_1fr]">
+            {/* ===== LEFT SIDEBAR — meta ===== */}
+            <aside className="relative border-b border-border bg-background/30 p-6 lg:border-b-0 lg:border-r">
+              {/* status */}
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/70" />
+                  <span className="relative h-2 w-2 rounded-full bg-emerald-500" />
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+                  available now
                 </span>
               </div>
 
-              <div className="space-y-3 text-sm">
-                <Row icon={Phone} label="Phone" value={profile.phone} />
-                <Row icon={MapPin} label="Based in" value={profile.location} />
+              <p className="font-handwritten mt-2 -rotate-1 text-lg text-primary/85">
+                replies within a day ✦
+              </p>
+
+              {/* dashed divider */}
+              <div className="my-6 border-t border-dashed border-border/60" />
+
+              {/* email */}
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+                  reach me
+                </p>
+                <a
+                  href={profile.socials.email}
+                  className="font-serif mt-1 block break-all text-xl italic text-foreground underline decoration-primary/60 decoration-2 underline-offset-4 transition-colors hover:text-primary"
+                >
+                  {profile.email}
+                </a>
               </div>
 
-              <div>
-                <div className="mb-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                  Find me online
-                </div>
-                <div className="flex flex-wrap gap-2">
+              <div className="mt-4 space-y-2.5">
+                <MetaRow icon={Phone} value={profile.phone} />
+                <MetaRow icon={MapPin} value={profile.location} />
+              </div>
+
+              {/* socials */}
+              <div className="mt-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+                  find me online
+                </p>
+                <div className="mt-3 flex flex-wrap gap-1.5">
                   {socials.map(({ icon: Icon, href, label }) => (
-                    <Magnetic strength={10} key={label}>
-                      <a
-                        href={href}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={label}
-                        className="group inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:border-primary hover:text-foreground"
-                      >
-                        <Icon className="text-current" />
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={label}
+                      className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-2.5 py-1 text-muted-foreground transition hover:border-primary hover:bg-primary/10 hover:text-foreground"
+                    >
+                      <Icon size={12} />
+                      <span className="font-mono text-[10px] uppercase tracking-[0.18em]">
                         {label}
-                      </a>
-                    </Magnetic>
+                      </span>
+                    </a>
                   ))}
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </aside>
 
-          <motion.form
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.55, delay: 0.1 }}
-            onSubmit={onSubmit}
-            className="surface card-elevated relative overflow-hidden p-6 lg:col-span-3"
-          >
-            <div className="pointer-events-none absolute -bottom-24 -right-24 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
-            <ScribbleArrow
-              label="opens in your mail app"
-              direction="down-right"
-              className="absolute -top-2 right-2 hidden lg:block"
-              labelClassName="text-primary/80 -rotate-2"
-            />
+            {/* ===== RIGHT — Form ===== */}
+            <form onSubmit={onSubmit} className="relative p-6 lg:p-8">
+              {/* form header */}
+              <div className="mb-6 flex items-center justify-between">
+                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+                  / new message
+                </p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                  {form.message.length > 0 && `${form.message.length} chars`}
+                </p>
+              </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field
-                label="Your name"
-                value={form.name}
-                onChange={(v) => setForm({ ...form, name: v })}
-                required
-              />
-              <Field
-                label="Email"
-                type="email"
-                value={form.email}
-                onChange={(v) => setForm({ ...form, email: v })}
-                required
-              />
-            </div>
-            <Field
-              label="Message"
-              textarea
-              value={form.message}
-              onChange={(v) => setForm({ ...form, message: v })}
-              required
-            />
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field
+                  label="Your name"
+                  value={form.name}
+                  onChange={(v) => setForm({ ...form, name: v })}
+                  placeholder="Ada Lovelace"
+                  required
+                  disabled={status === 'sending' || status === 'sent'}
+                />
+                <Field
+                  label="Email"
+                  type="email"
+                  value={form.email}
+                  onChange={(v) => setForm({ ...form, email: v })}
+                  placeholder="you@example.com"
+                  required
+                  disabled={status === 'sending' || status === 'sent'}
+                />
+              </div>
 
-            <div className="mt-5 flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">
-                Or just say hi — I reply to every message.
-              </span>
-              <button type="submit" className="btn-primary">
-                {sent ? (
-                  <>
-                    <CheckCircle2 size={16} /> Opened mail
-                  </>
-                ) : (
-                  <>
-                    <Sparkles size={16} /> Send
-                    <Send size={14} />
-                  </>
-                )}
-              </button>
-            </div>
-          </motion.form>
-        </div>
+              <div className="mt-5">
+                <Field
+                  label="Message"
+                  textarea
+                  value={form.message}
+                  onChange={(v) => setForm({ ...form, message: v })}
+                  placeholder="Tell me about your idea, role, or just say hi…"
+                  required
+                  disabled={status === 'sending' || status === 'sent'}
+                />
+              </div>
+
+              {/* footer row */}
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                  {status === 'sent'
+                    ? '✓ delivered — talk soon!'
+                    : status === 'error'
+                      ? 'opened in your mail app instead'
+                      : 'sent via email · ~24h reply'}
+                </p>
+
+                <button
+                  type="submit"
+                  disabled={status === 'sending' || status === 'sent'}
+                  className={cn(
+                    'btn-primary group min-w-[140px] justify-center',
+                    (status === 'sending' || status === 'sent') &&
+                      'cursor-not-allowed opacity-90'
+                  )}
+                >
+                  {status === 'sending' && (
+                    <>
+                      <Loader2 size={15} className="animate-spin" />
+                      Sending…
+                    </>
+                  )}
+                  {status === 'sent' && (
+                    <>
+                      <CheckCircle2 size={15} />
+                      Sent
+                    </>
+                  )}
+                  {(status === 'idle' || status === 'error') && (
+                    <>
+                      Send message
+                      <Send
+                        size={14}
+                        className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      />
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* small "or" line */}
+              <p className="mt-5 border-t border-dashed border-border/60 pt-4 text-center text-xs text-muted-foreground">
+                or just{' '}
+                <a
+                  href={profile.socials.email}
+                  className="font-serif italic text-foreground underline decoration-primary/60 underline-offset-2 hover:text-primary"
+                >
+                  email me directly
+                </a>
+                <ArrowUpRight
+                  size={11}
+                  className="ml-0.5 inline-block align-middle"
+                />
+              </p>
+            </form>
+          </div>
+        </motion.div>
       </div>
     </section>
   )
 }
 
-const Row = ({ icon: Icon, label, value }) => (
-  <div className="flex items-center gap-3">
-    <span className="grid h-8 w-8 place-items-center rounded-lg border border-border bg-background/40 text-primary">
-      <Icon size={14} />
-    </span>
-    <div>
-      <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-        {label}
-      </div>
-      <div className="text-sm font-medium">{value}</div>
-    </div>
+const MetaRow = ({ icon: Icon, value }) => (
+  <div className="flex items-center gap-2.5 text-sm">
+    <Icon size={13} className="text-primary" />
+    <span className="text-foreground/90">{value}</span>
   </div>
 )
 
@@ -225,9 +310,11 @@ const Field = ({
   type = 'text',
   textarea,
   required,
+  placeholder,
+  disabled,
 }) => (
   <label className="group block">
-    <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+    <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
       {label}
     </span>
     {textarea ? (
@@ -235,16 +322,20 @@ const Field = ({
         rows={5}
         required={required}
         value={value}
+        disabled={disabled}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-2 w-full resize-none rounded-lg border border-border bg-background/40 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+        placeholder={placeholder}
+        className="mt-1.5 w-full resize-none rounded-lg border border-border bg-background/40 px-3.5 py-3 text-sm outline-none transition placeholder:text-muted-foreground/40 focus:border-primary focus:bg-background/70 focus:ring-2 focus:ring-primary/30 disabled:opacity-60"
       />
     ) : (
       <input
         type={type}
         required={required}
         value={value}
+        disabled={disabled}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-2 w-full rounded-lg border border-border bg-background/40 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+        placeholder={placeholder}
+        className="mt-1.5 w-full rounded-lg border border-border bg-background/40 px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted-foreground/40 focus:border-primary focus:bg-background/70 focus:ring-2 focus:ring-primary/30 disabled:opacity-60"
       />
     )}
   </label>
