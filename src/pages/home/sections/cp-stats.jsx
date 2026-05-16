@@ -10,10 +10,34 @@ import {
 } from 'lucide-react'
 
 import { cpStats, cpStatRings, cpStatTiles } from '@/constants'
+import { useLeetCodeStats } from '@/hooks'
 import SectionHeading from '@/components/shared/section-heading'
 import { AsteriskStar, CircleScribble } from '@/components/effects'
 
 const TILE_ICONS = { Trophy, Target, Flame, Code2 }
+
+const mergeStats = (base, live) => {
+  if (!live) return base
+  const merged = { ...base }
+  for (const key of Object.keys(live)) {
+    const v = live[key]
+    if (v !== null && v !== undefined && !(Array.isArray(v) && v.length === 0)) {
+      merged[key] = v
+    }
+  }
+  return merged
+}
+
+const formatRelative = (ts) => {
+  if (!ts) return ''
+  const diff = Math.max(0, Date.now() - ts)
+  const m = Math.floor(diff / 60_000)
+  if (m < 1) return 'just now'
+  if (m < 60) return `${m}m ago`
+  const h = Math.floor(m / 60)
+  if (h < 24) return `${h}h ago`
+  return `${Math.floor(h / 24)}d ago`
+}
 
 const ProgressRing = ({ value, total, color, label, sub }) => {
   const pct = Math.round((value / total) * 100)
@@ -80,6 +104,10 @@ const StatTile = ({ icon: Icon, value, label, accent }) => (
 )
 
 const CpStats = () => {
+  const { data: live, status, fetchedAt } = useLeetCodeStats(cpStats.handle)
+  const stats = mergeStats(cpStats, live)
+  const isLive = status === 'live'
+
   return (
     <section id="cp" className="relative scroll-mt-24 py-24">
       {/* Decorations */}
@@ -120,11 +148,20 @@ const CpStats = () => {
 
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                  LeetCode · @{cpStats.handle}
+                <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <span>LeetCode · @{stats.handle}</span>
+                  {isLive && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-emerald-400">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/70" />
+                        <span className="relative h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      </span>
+                      <span>live · {formatRelative(fetchedAt)}</span>
+                    </span>
+                  )}
                 </div>
                 <div className="mt-1 flex items-baseline gap-2 font-display text-3xl font-bold">
-                  {cpStats.totalSolved}
+                  {stats.totalSolved}
                   <span className="text-base font-normal text-muted-foreground">
                     problems
                   </span>
@@ -134,7 +171,7 @@ const CpStats = () => {
                 </div>
               </div>
               <a
-                href={cpStats.leetcodeUrl}
+                href={stats.leetcodeUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="btn-outline !py-1.5 !px-3 text-xs"
@@ -147,17 +184,17 @@ const CpStats = () => {
               {cpStatRings.map(({ key, color, label }) => (
                 <ProgressRing
                   key={key}
-                  value={cpStats[key]}
-                  total={cpStats.totalSolved}
+                  value={stats[key]}
+                  total={stats.totalSolved}
                   color={color}
                   label={label}
-                  sub={`${cpStats[key]} solved`}
+                  sub={`${stats[key]} solved`}
                 />
               ))}
             </div>
 
             <div className="mt-6 flex flex-wrap items-center gap-2">
-              {cpStats.badges.map((b) => (
+              {stats.badges.slice(0, 4).map((b) => (
                 <span
                   key={b}
                   className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-[11px] font-medium text-amber-300"
@@ -166,6 +203,16 @@ const CpStats = () => {
                   {b}
                 </span>
               ))}
+              {stats.badges.length > 4 && (
+                <a
+                  href={stats.leetcodeUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-background/40 px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition hover:border-primary hover:text-foreground"
+                >
+                  +{stats.badges.length - 4} more
+                </a>
+              )}
             </div>
           </motion.div>
 
@@ -175,7 +222,7 @@ const CpStats = () => {
               <StatTile
                 key={key}
                 icon={TILE_ICONS[icon]}
-                value={suffix ? `${cpStats[key]}${suffix}` : cpStats[key]}
+                value={suffix ? `${stats[key]}${suffix}` : stats[key]}
                 label={label}
                 accent={accent}
               />
