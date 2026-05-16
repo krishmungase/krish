@@ -1,39 +1,14 @@
 import { useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-import { skills } from '@/constants'
+import {
+  skills,
+  skillStackCategories as CATEGORIES,
+  skillCategoryMeta as categoryMeta,
+} from '@/constants'
 import SectionHeading from '@/components/shared/section-heading'
 import { SkillIcon, AsteriskStar, CircleScribble } from '@/components/effects'
 import { cn } from '@/lib'
-
-const CATEGORIES = ['Language', 'Frontend', 'Backend', 'DevOps']
-
-const categoryMeta = {
-  Language: {
-    file: 'languages.ts',
-    varName: 'languages',
-    tag: 'the speaking layer',
-    blurb: 'How I think out loud.',
-  },
-  Frontend: {
-    file: 'frontend.ts',
-    varName: 'frontend',
-    tag: 'the visible layer',
-    blurb: 'What ships to the browser.',
-  },
-  Backend: {
-    file: 'backend.ts',
-    varName: 'backend',
-    tag: 'the thinking layer',
-    blurb: 'Where the heavy lifting lives.',
-  },
-  DevOps: {
-    file: 'devops.ts',
-    varName: 'devops',
-    tag: 'the shipping layer',
-    blurb: 'How it gets to production.',
-  },
-}
 
 const FolderIcon = ({ open = false }) => (
   <svg

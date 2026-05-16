@@ -12,7 +12,7 @@ import {
   Loader2,
 } from 'lucide-react'
 
-import { profile } from '@/constants'
+import { profile, contactSocials } from '@/constants'
 import SectionHeading from '@/components/shared/section-heading'
 import { AsteriskStar, CircleScribble } from '@/components/effects'
 import { cn } from '@/lib'
@@ -29,11 +29,7 @@ const LeetCodeIcon = (props) => (
   </svg>
 )
 
-const socials = [
-  { icon: Github, href: profile.socials.github, label: 'GitHub' },
-  { icon: Linkedin, href: profile.socials.linkedin, label: 'LinkedIn' },
-  { icon: LeetCodeIcon, href: profile.socials.leetcode, label: 'LeetCode' },
-]
+const SOCIAL_ICONS = { Github, Linkedin, LeetCode: LeetCodeIcon }
 
 const Contact = () => {
   // status: idle | sending | sent | error
@@ -168,21 +164,24 @@ const Contact = () => {
                   find me online
                 </p>
                 <div className="mt-3 flex flex-wrap gap-1.5">
-                  {socials.map(({ icon: Icon, href, label }) => (
-                    <a
-                      key={label}
-                      href={href}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label={label}
-                      className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-2.5 py-1 text-muted-foreground transition hover:border-primary hover:bg-primary/10 hover:text-foreground"
-                    >
-                      <Icon size={12} />
-                      <span className="font-mono text-[10px] uppercase tracking-[0.18em]">
-                        {label}
-                      </span>
-                    </a>
-                  ))}
+                  {contactSocials.map(({ icon, socialKey, label }) => {
+                    const Icon = SOCIAL_ICONS[icon]
+                    return (
+                      <a
+                        key={label}
+                        href={profile.socials[socialKey]}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={label}
+                        className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-2.5 py-1 text-muted-foreground transition hover:border-primary hover:bg-primary/10 hover:text-foreground"
+                      >
+                        <Icon size={12} />
+                        <span className="font-mono text-[10px] uppercase tracking-[0.18em]">
+                          {label}
+                        </span>
+                      </a>
+                    )
+                  })}
                 </div>
               </div>
             </aside>

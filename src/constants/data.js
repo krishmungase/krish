@@ -191,6 +191,7 @@ export const experience = [
     location: 'Remote',
     period: 'Jul 2025 — Present',
     type: 'Internship',
+    logo: 'https://www.workableai.org/new_logo.png',
     points: [
       'Building React frontends with reusable, accessible components.',
       'Designing modular Node.js APIs with clean separation of concerns.',
@@ -244,6 +245,63 @@ export const cpStats = {
   globalRank: '~ 55k',
   badges: ['500 Days Badge', '100 Days Badge'],
 }
+
+export const cpStatRings = [
+  { key: 'easy', color: '#22c55e', label: 'Easy' },
+  { key: 'medium', color: '#f59e0b', label: 'Medium' },
+  { key: 'hard', color: '#ef4444', label: 'Hard' },
+]
+
+export const cpStatTiles = [
+  { key: 'rating', icon: 'Trophy', label: 'Contest rating', accent: '#fbbf24' },
+  { key: 'contestsAttended', icon: 'Target', label: 'Contests', accent: '#8b6dff' },
+  { key: 'maxStreak', icon: 'Flame', label: 'Max streak', accent: '#fb7185', suffix: 'd' },
+  { key: 'globalRank', icon: 'Code2', label: 'Global rank', accent: '#22d3ee' },
+]
+
+export const aboutFacts = [
+  { icon: 'MapPin', label: 'Based in', value: 'Pune, India' },
+  { icon: 'Briefcase', label: 'Currently', value: 'WorkableAI Intern' },
+  { icon: 'GraduationCap', label: 'Studying', value: 'B.Tech CE · 8.50 CGPA' },
+  { icon: 'Cpu', label: 'Daily driver', value: 'React · Node · C++' },
+]
+
+export const skillStackCategories = ['Language', 'Frontend', 'Backend', 'DevOps']
+
+export const skillCategoryMeta = {
+  Language: {
+    file: 'languages.ts',
+    varName: 'languages',
+    tag: 'the speaking layer',
+    blurb: 'How I think out loud.',
+  },
+  Frontend: {
+    file: 'frontend.ts',
+    varName: 'frontend',
+    tag: 'the visible layer',
+    blurb: 'What ships to the browser.',
+  },
+  Backend: {
+    file: 'backend.ts',
+    varName: 'backend',
+    tag: 'the thinking layer',
+    blurb: 'Where the heavy lifting lives.',
+  },
+  DevOps: {
+    file: 'devops.ts',
+    varName: 'devops',
+    tag: 'the shipping layer',
+    blurb: 'How it gets to production.',
+  },
+}
+
+export const contactSocials = [
+  { icon: 'Github', socialKey: 'github', label: 'GitHub' },
+  { icon: 'Linkedin', socialKey: 'linkedin', label: 'LinkedIn' },
+  { icon: 'LeetCode', socialKey: 'leetcode', label: 'LeetCode' },
+]
+
+export const heroWaveform = [3, 6, 4, 8, 5, 9, 6, 4, 7, 5, 3, 8, 4, 6, 5, 7, 4]
 
 export const navLinks = [
   { label: 'Home', href: '#home' },

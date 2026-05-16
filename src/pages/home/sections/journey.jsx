@@ -122,7 +122,7 @@ const FeaturedWorkable = ({ item }) => (
             <div className="mx-auto grid h-20 w-20 place-items-center">
               <span className="font-display text-3xl font-bold text-primary-foreground">
                 <img
-                  src="https://www.workableai.org/new_logo.png"
+                  src={item.logo}
                   alt={`${item.company} logo`}
                   className="h-12 w-12 object-contain"
                 />

@@ -9,7 +9,7 @@ import {
   AsteriskStar,
   CircleScribble,
 } from '@/components/effects'
-import { profile } from '@/constants'
+import { profile, heroWaveform } from '@/constants'
 
 const useLocalClock = () => {
   const [time, setTime] = useState(() => new Date())
@@ -318,8 +318,7 @@ const Hero = () => {
 
               {/* mini waveform */}
               <div className="mt-2.5 flex items-end gap-[3px]">
-                {[3, 6, 4, 8, 5, 9, 6, 4, 7, 5, 3, 8, 4, 6, 5, 7, 4].map(
-                  (h, i) => (
+                {heroWaveform.map((h, i) => (
                     <motion.span
                       key={i}
                       animate={{ scaleY: [0.4, 1, 0.6, 1, 0.5] }}
@@ -335,8 +334,7 @@ const Hero = () => {
                       }}
                       className="w-[3px] rounded-sm bg-primary/70"
                     />
-                  )
-                )}
+                ))}
               </div>
             </div>
           </motion.div>

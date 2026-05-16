@@ -8,16 +8,11 @@ import {
   Sparkles,
 } from 'lucide-react'
 
-import { achievements } from '@/constants'
+import { achievements, aboutFacts } from '@/constants'
 import SectionHeading from '@/components/shared/section-heading'
 import { AsteriskStar, CircleScribble } from '@/components/effects'
 
-const facts = [
-  { icon: MapPin, label: 'Based in', value: 'Pune, India' },
-  { icon: Briefcase, label: 'Currently', value: 'WorkableAI Intern' },
-  { icon: GraduationCap, label: 'Studying', value: 'B.Tech CE · 8.50 CGPA' },
-  { icon: Cpu, label: 'Daily driver', value: 'React · Node · C++' },
-]
+const FACT_ICONS = { MapPin, Briefcase, GraduationCap, Cpu }
 
 const About = () => {
   return (
@@ -95,20 +90,23 @@ const About = () => {
               transition={{ duration: 0.55 }}
               className="grid grid-cols-2 gap-3"
             >
-              {facts.map(({ icon: Icon, label, value }) => (
-                <div
-                  key={label}
-                  className="card-elevated surface flex flex-col gap-2 p-4"
-                >
-                  <Icon size={16} className="text-primary" />
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                    {label}
-                  </span>
-                  <span className="text-sm font-medium text-foreground">
-                    {value}
-                  </span>
-                </div>
-              ))}
+              {aboutFacts.map(({ icon, label, value }) => {
+                const Icon = FACT_ICONS[icon]
+                return (
+                  <div
+                    key={label}
+                    className="card-elevated surface flex flex-col gap-2 p-4"
+                  >
+                    <Icon size={16} className="text-primary" />
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                      {label}
+                    </span>
+                    <span className="text-sm font-medium text-foreground">
+                      {value}
+                    </span>
+                  </div>
+                )
+              })}
             </motion.div>
 
             <motion.div

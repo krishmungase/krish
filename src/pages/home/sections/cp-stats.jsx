@@ -9,9 +9,11 @@ import {
   ExternalLink,
 } from 'lucide-react'
 
-import { cpStats } from '@/constants'
+import { cpStats, cpStatRings, cpStatTiles } from '@/constants'
 import SectionHeading from '@/components/shared/section-heading'
 import { AsteriskStar, CircleScribble } from '@/components/effects'
+
+const TILE_ICONS = { Trophy, Target, Flame, Code2 }
 
 const ProgressRing = ({ value, total, color, label, sub }) => {
   const pct = Math.round((value / total) * 100)
@@ -142,27 +144,16 @@ const CpStats = () => {
             </div>
 
             <div className="mt-6 grid gap-5 sm:grid-cols-3">
-              <ProgressRing
-                value={cpStats.easy}
-                total={cpStats.totalSolved}
-                color="#22c55e"
-                label="Easy"
-                sub={`${cpStats.easy} solved`}
-              />
-              <ProgressRing
-                value={cpStats.medium}
-                total={cpStats.totalSolved}
-                color="#f59e0b"
-                label="Medium"
-                sub={`${cpStats.medium} solved`}
-              />
-              <ProgressRing
-                value={cpStats.hard}
-                total={cpStats.totalSolved}
-                color="#ef4444"
-                label="Hard"
-                sub={`${cpStats.hard} solved`}
-              />
+              {cpStatRings.map(({ key, color, label }) => (
+                <ProgressRing
+                  key={key}
+                  value={cpStats[key]}
+                  total={cpStats.totalSolved}
+                  color={color}
+                  label={label}
+                  sub={`${cpStats[key]} solved`}
+                />
+              ))}
             </div>
 
             <div className="mt-6 flex flex-wrap items-center gap-2">
@@ -180,30 +171,15 @@ const CpStats = () => {
 
           {/* Stat tiles */}
           <div className="grid grid-cols-2 gap-3 lg:col-span-2">
-            <StatTile
-              icon={Trophy}
-              value={cpStats.rating}
-              label="Contest rating"
-              accent="#fbbf24"
-            />
-            <StatTile
-              icon={Target}
-              value={cpStats.contestsAttended}
-              label="Contests"
-              accent="#8b6dff"
-            />
-            <StatTile
-              icon={Flame}
-              value={`${cpStats.maxStreak}d`}
-              label="Max streak"
-              accent="#fb7185"
-            />
-            <StatTile
-              icon={Code2}
-              value={cpStats.globalRank}
-              label="Global rank"
-              accent="#22d3ee"
-            />
+            {cpStatTiles.map(({ key, icon, label, accent, suffix }) => (
+              <StatTile
+                key={key}
+                icon={TILE_ICONS[icon]}
+                value={suffix ? `${cpStats[key]}${suffix}` : cpStats[key]}
+                label={label}
+                accent={accent}
+              />
+            ))}
           </div>
         </div>
       </div>
